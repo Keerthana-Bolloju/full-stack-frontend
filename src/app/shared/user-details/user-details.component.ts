@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter,OnChanges } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-details',
@@ -6,6 +7,8 @@ import { Component, OnInit, Input, Output, EventEmitter,OnChanges } from '@angul
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
+  @Input() userBg:String;
+  @Input() userColor:String;
   @Input() userFirstName: any;
   @Input() userLastName: string;
   @Input() userStatus: string;
@@ -13,8 +16,13 @@ export class UserDetailsComponent implements OnInit {
   
   public firstChar: string;
   
+  constructor(private toastr: ToastrService){}
+
   ngOnInit():void {
     this.firstChar = this.userFirstName[0];
   }
 
+  public showUserName = (name:string)=>{  //to be used  
+    this.toastr.success("You are now chatting with "+name)
+  }
 }
