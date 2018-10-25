@@ -9,7 +9,7 @@ import{HttpErrorResponse,HttpParams} from '@angular/common/http';
 })
 export class AppService {
   
-  private url = 'http://localhost:3000/api/v1';
+  private url = 'http://api.ping-you.xyz/api/v1';
 
   constructor(public http:HttpClient) { }
 
