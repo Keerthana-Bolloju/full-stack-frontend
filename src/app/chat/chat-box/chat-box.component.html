@@ -23,6 +23,9 @@
             <div class="collapse people-list navbar-collapse" id="navbarSupportedContent">
   
               <ul class="list">
+                <li class="p-3 text-white textCapitalize textCenter">
+                    <button (click)="logout()" class="btn btn-dark customButton">Logout</button>
+                </li>
                 <li class="p-2 typeOfChats">
                   Online Users:
                 </li>
@@ -109,7 +112,8 @@
             </li>
   
           </ul>
-  
+          <span *ngIf="userNameTyping"> {{userNameTyping}} is typing</span>
+            <span *ngIf="!userNameTyping"> </span>
         </div>
         <div *ngIf="!receiverName" class="col-sm blankContent">
           Click on user for start a chat!!!

@@ -14,7 +14,7 @@ import{HttpErrorResponse,HttpParams} from '@angular/common/http';
 })
 export class SocketService {
 
-  private url = 'http://ping-you.xyz'
+  private url = 'http://api.ping-you.xyz'
   private socket
 
   constructor(public http:HttpClient) {
@@ -59,10 +59,23 @@ export class SocketService {
      })
    }//end chatByUserId
 
+
+   public listenUserTyping = () => {
+    return Observable.create((observer) => {
+      this.socket.on('typing', (data) => {
+        observer.next(data);
+      }); 
+    });
+  } // end listenUserTyping
+
    /*************************************** END EVENTS TO BE LISTENED ***********************************/
 
 
    /*********************************** START EVENTS TO BE EMITTED ***********************************/
+
+   public emitUserTyping = (data) => {
+    this.socket.emit('typing', data);
+  }//end emitUserTyping
 
    public setUser = (authToken)=>{
     this.socket.emit('set-user',(authToken))

@@ -30,6 +30,8 @@ export class ChatBoxComponent implements OnInit {
   public pageValue:any = 0
   public loadPreChatList:boolean = false
 
+  public userNameTyping: any;
+
 
   constructor(
     public appService:AppService,
@@ -51,7 +53,7 @@ export class ChatBoxComponent implements OnInit {
     this.verifyUserConfirmation()
     this.getOnlineUserList()
     this.getMsgFromUser()
-    
+    this.listenTypingFunction()
     
   }
 
@@ -165,8 +167,26 @@ export class ChatBoxComponent implements OnInit {
   public sendMsgByKeyPress:any =(event:any)=>{
     if(event.keyCode === 13){
       this.sendMsg()
+    }else{
+      let senderNameTyping = this.userInfo.firstName+ ' ' + this.userInfo.lastName
+      this.socketService.emitUserTyping(senderNameTyping)
+
+      setTimeout(() => {
+        this.socketService.emitUserTyping('')            
+      }, 3000);
+
     }
   }//end sendMsgByKeyPress
+
+  public listenTypingFunction: any = () => {
+
+    this.socketService.listenUserTyping().subscribe((data) => {
+        this.userNameTyping = data;
+      });//end subscribe
+
+
+
+  }// end listenTyping 
 
   public getMsgFromUser:any=()=>{
     this.socketService.chatByUserId(this.userInfo.userId).subscribe((data)=>{
