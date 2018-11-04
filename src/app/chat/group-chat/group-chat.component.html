@@ -1,0 +1,441 @@
+<div class="container-fluid">
+  <div class="row row-style">
+
+    <!---------this is mobile nav--------->
+    <div class="displayBlockMobile" style="position:fixed;width:100%;z-index:1;">
+
+      <div class="col-sm-12 p-0">
+
+        <nav class="navbar navbar-expand-md navbar-fixed navbar-dark bg-dark">
+
+          <a class="navbar-brand text-white">
+            {{userInfo.firstName}} {{userInfo.lastName}}
+            <i class="fa fa-circle online" *ngIf="disconnectedSocket == false"></i>
+            <i class="fa fa-circle offline" *ngIf="disconnectedSocket == true"></i>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+
+          </button>
+
+          <div class="collapse people-list navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="list">
+              <li class="p-2 typeOfChats">
+                Online Users:
+              </li>
+              <li class="clearfix cursorPointer" [ngClass]="{'activeChat': user.chatting == true}" (click)="chatByParticularUser(user.userId, user.name)"
+                *ngFor="let user of userList">
+                <div class="userPresence" *ngIf="user.userId != userInfo.userId">
+                  <app-user-details [userFirstName]="user.name" [userLastName]="''" [userStatus]="'online'"
+                    [messageRead]="user.unread"></app-user-details>
+                </div>
+              </li>
+
+            </ul>
+
+          </div>
+
+        </nav>
+
+      </div>
+
+    </div>
+
+    <!---------this is mobile nav--------->
+
+
+    <div class="col-12 displayNoneMobile col-sm-4 col-md-4 people-list p-0" id="people-list">
+
+      <div class="p-3 text-white textCapitalize textCenter">
+        {{userInfo.firstName}} {{userInfo.lastName}}
+        <i class="fa fa-circle online" *ngIf="disconnectedSocket == false"></i>
+        <i class="fa fa-circle offline" *ngIf="disconnectedSocket == true"></i>
+        <br>
+        <br>
+        <button (click)="logout()" class="btn btn-dark customButton">Logout</button>
+      </div>
+      <!--chats Groups NAV START -->
+      <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="chats-tab" data-toggle="tab" href="#chats" role="tab" aria-controls="chats"
+            aria-selected="true"><i class="fa fa-comments"></i> CHATS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="groups-tab" data-toggle="tab" href="#groups" role="tab" aria-controls="groups"
+            aria-selected="false"><i class="fa fa-recycle"></i> GROUPS</a>
+        </li>
+      </ul>
+      <!--chats Groups NAV end -->
+
+      <!--chats Groups nav tab start -->
+      <div class="tab-content" id="myTabContent" style="background-color: #996515;">
+
+        <!--chats content start -->
+        <div class="tab-pane fade show active" id="chats" role="tabpanel" aria-labelledby="chats-tab">
+          <ul class="list" id="chatUserList">
+            <li class="p-2 typeOfChats">
+              Online Users:
+            </li>
+            <li class="clearfix cursorPointer" [ngClass]="{'activeChat': user.chatting == true}" *ngFor="let user of userList"
+              (click)="chatByParticularUser(user.userId, user.name)">
+              <div class="userPresence" *ngIf="user.userId != userInfo.userId">
+                <app-user-details [userFirstName]="user.name" [userLastName]="''" [userStatus]="'online'" [messageRead]="user.unread"></app-user-details>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!--chats content end -->
+
+        <!--groups content start -->
+        <div class="tab-pane fade" id="groups" role="tabpanel" aria-labelledby="groups-tab">
+          <ul class="list" id="groupChatUserList">
+
+            <!---Model of create start----->
+            <li class="p-3 text-white textCenter">
+              
+              <button type="button" class="btn btn-dark customButton" data-toggle="modal" data-target="#createGroup">
+                Create Group
+              </button><!-- Button trigger modal -->
+
+              <div class="modal fade" id="createGroup" tabindex="-1" role="dialog" aria-labelledby="createGroupTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content bg-darkgoldenrod">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Create Group</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <input [(ngModel)]='chatRoomTitle' type="text" class="form-control" id="inputchatRoomTitle"
+                        placeholder="Enter the Room Name" required>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-dark" (click)="createChatRoom()">Create</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Modal -->
+
+
+              <div class="modal fade" id="inviteLink" tabindex="-1" role="dialog" aria-labelledby="inviteLinkTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content bg-darkgoldenrod">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Invite Link</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h4>Want your friends to be in This Group?Invite Them</h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-dark" [routerLink]="['/chatroom/inviteLink',chatRoomId]">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Modal -->
+              <!-- end edit modal -->
+
+
+              <div class="modal fade" id="editRoom" tabindex="-1" role="dialog" aria-labelledby="editRoomTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content bg-darkgoldenrod">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Edit Group</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h4>Are you sure..! Wanna Edit This Group?</h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-dark" [routerLink]="['/chatroom/editroom',chatRoomId]">Yes,Edit</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Modal -->
+              <!-- end edit modal -->
+
+
+              <div class="modal fade" id="leaveRoom" tabindex="-1" role="dialog" aria-labelledby="leaveRoomTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content bg-darkgoldenrod">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Leave Group</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h4>Are you sure..! Wanna Leave This Group?</h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-dark" (click)="leaveChatRoom()">Yes,Leave</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Modal -->
+              <!-- end leave modal -->
+
+              <div class="modal fade" id="deleteRoom" tabindex="-1" role="dialog" aria-labelledby="deleteRoomTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content bg-darkgoldenrod">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Delete Group</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h4>Are you sure..! Wanna Delete This Group?</h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-dark" (click)="deleteChatRoom()">Yes,Delete</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- Modal -->
+              <!-- end delete modal -->
+
+            </li>
+            <!---Model of create end----->
+
+
+            <li class="p-2 typeOfChats">
+              Joined Groups:
+            </li>
+            <span *ngIf="joinedRooms.length == 0"> Not joined any group yet</span>
+
+            <li class="clearfix cursorPointer">
+              <div *ngFor="let room of joinedRooms">
+                <div *ngIf="room.active == 'Yes'" (click)="groupSelectedToChat(room.chatRoomId, room.chatRoomTitle)">
+                  <div class="row">
+                    <div class="col-3">
+                      <app-first-char [name]="room.chatRoomTitle" [userBg]="'#343a40'" [userColor]="'white'" (notify)="showUserName($event)"></app-first-char>
+                    </div>
+                    <div class="col-9 userPresence p-3 text-white textCapitalize">
+                      {{room.chatRoomTitle}}
+                      <i class="fa fa-circle online" *ngIf="disconnectedSocket == false"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="p-2 typeOfChats">
+              Groups To Join:
+            </li>
+            <span class="text-center" *ngIf="roomsAvailableToJoin.length == 0"> No Groups to join</span>
+
+            <li class="clearfix cursorPointer">
+              <div *ngFor="let availRoom of roomsAvailableToJoin">
+                <div *ngIf="availRoom.active == 'Yes'">
+                  <div class="row">
+                    <div class="col-3">
+                      <app-first-char [name]="availRoom.chatRoomTitle" [userBg]="'#343a40'" [userColor]="'white'" (notify)="showUserName($event)"></app-first-char>
+                    </div>
+                    <div class="col-9 userPresence p-3 text-white textCapitalize">
+                      <span>{{availRoom.chatRoomTitle}}</span>
+                      <span>
+                        <button type="button" class="btn btn-warning" [routerLink]="['/joinroom',availRoom.chatRoomId]">Join</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+        <!--groups content end -->
+
+      </div>
+      <!--chats Groups nav tab start -->
+
+    </div>
+    <!--end 4 column division-->
+
+    <div class="col-12 col-sm-8 col-md-8 chat" id="chatIDBox">
+      <div class="chat-header clearfix mobileMenu" *ngIf="receiverName">
+        <app-first-char [name]="receiverName" [userBg]="'#343a40'" [userColor]="'white'" (notify)="showUserName($event)"></app-first-char>
+
+        <div class="chat-about">
+          <div class="chat-with">Chat with {{receiverName}}</div>
+        </div>
+      </div>
+      <!-- end chat-header -->
+
+      <div #scrollMe [scrollTop]="(scrollToTop)?0:scrollMe.scrollHeight" class="chat-history" *ngIf="receiverName">
+
+        <ul>
+          <li class="textCenter" *ngIf="receiverName">
+
+            <span class="cursorPointer" (click)="loadPreChat()">Load Previous Chat</span>
+
+            <br>
+
+            <span *ngIf="loadPreChatList == true"></span>
+
+          </li>
+          <li class="clearfix" *ngFor="let message of msgList">
+            <div class="message-data" [ngClass]="{'align-right': message.senderId == userInfo.userId}">
+              <span class="message-data-time">{{message?.createdOn | date: 'medium' }}</span> &nbsp; &nbsp;
+              <span class="message-data-name floatLeft" *ngIf="message.senderId != userInfo.userId">
+                <i class="fa fa-circle online"></i> {{ message?.senderName }}</span>
+              <span class="message-data-name" *ngIf="message.senderId == userInfo.userId">{{ message?.senderName }}
+                <i class="fa fa-circle me" *ngIf="message.senderId == userInfo.userId"></i></span>
+
+            </div>
+            <div class="message" [ngClass]="{'float-right other-message': message.senderId == userInfo.userId, 'my-message': message.senderId != userInfo.userId}">
+              {{message?.message}}
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+      <div *ngIf="!receiverName" class="col-sm blankContent">
+        Click on user for start a chat!!!
+      </div>
+      <!-- end chat-history -->
+
+      <div class="chat-message clearfix p-2 col-12" *ngIf="receiverName">
+
+        <div class="input-group">
+          <div class="col-9 col-md-11">
+            <textarea name="message-to-send" id="message-to-send" (keydown)="sendMsgByKeyPress($event)" [(ngModel)]="msgText"
+              placeholder="Type your message" rows="1"></textarea>
+          </div>
+          <div class="col-3 col-md-1">
+            <button (click)="sendMsg()" class="btn btn-dark">Send</button>
+          </div>
+        </div>
+
+      </div>
+      <!-- end chat-message -->
+
+    </div>
+    <!--end 8 column chatIDBox division-->
+
+
+
+    <div class="col-12 col-sm-8 col-md-8 chat" id="groupChatIDBox">
+      <div class="chat-header clearfix mobileMenu" *ngIf="chatRoomTitle">
+        <div class="row">
+
+          <div class="col-2">
+            <app-first-char [name]="chatRoomTitle" [userBg]="'#343a40'" [userColor]="'white'" (notify)="showUserName($event)"></app-first-char>
+          </div>
+
+          <div class="col-9">
+            <div class="chat-about">
+              <div class="chat-with">Group: {{chatRoomTitle}}</div>
+              <span *ngFor="let user of usersInGroup;let last=last;">{{user}}{{(last) ? " ":", "}} </span>
+            </div>
+          </div>
+
+          <div class="col-1">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-ellipsis-v icons"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button">Invite</button>
+                <button class="dropdown-item" type="button">Edit Group</button>
+                <button class="dropdown-item" type="button" (click)="leaveChatRoom()">Leave Group</button>
+                <button class="dropdown-item" type="button" (click)="deleteChatRoom()">Delete Group</button>
+
+                <button type="button" class="dropdown-item btn btn-dark customButton" data-toggle="modal" data-target="#inviteLink">
+                  Invite
+                </button><!-- Button trigger modal -->
+
+                <button type="button" class="dropdown-item btn btn-dark customButton" data-toggle="modal" data-target="#editRoom">
+                  Edit Group
+                </button><!-- Button trigger modal -->
+               
+                <button type="button" class="dropdown-item btn btn-dark customButton" data-toggle="modal" data-target="#leaveRoom">
+                  Leave Group
+                </button><!-- Button trigger modal -->
+               
+                <button type="button" class="dropdown-item btn btn-dark customButton" data-toggle="modal" data-target="#deleteRoom">
+                  Delete Group
+                </button><!-- Button trigger modal -->
+
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end row -->
+
+      </div><!-- end chat-header -->
+
+      <div #scrollMe [scrollTop]="(scrollToTop)?0:scrollMe.scrollHeight" class="chat-history" *ngIf="chatRoomTitle">
+
+        <ul>
+          <li class="textCenter" *ngIf="chatRoomTitle">
+            <span class="cursorPointer" (click)="loadEarlierPageOfChat()">Load Previous Chat</span>
+            <br>
+            <span *ngIf="loadPreChatList == true"></span>
+          </li>
+
+          <li class="clearfix" *ngFor="let message of msgList">
+            <div class="message-data" [ngClass]="{'align-right': message.senderId == userInfo.userId}">
+              <span class="message-data-time">{{message?.createdOn | date: 'medium' }}</span> &nbsp; &nbsp;
+              <span class="message-data-name floatLeft" *ngIf="message.senderId != userInfo.userId">
+                <i class="fa fa-circle online"></i> {{ message?.senderName }}</span>
+              <span class="message-data-name" *ngIf="message.senderId == userInfo.userId">{{ message?.senderName }}
+                <i class="fa fa-circle me" *ngIf="message.senderId == userInfo.userId"></i></span>
+            </div>
+
+            <div class="message" [ngClass]="{'float-right other-message': message.senderId == userInfo.userId, 'my-message': message.senderId != userInfo.userId}">
+              {{message?.message}}
+            </div>
+          </li>
+        </ul>
+        <span *ngIf="userNameTyping"> {{userNameTyping}} ...</span>
+        <span *ngIf="!userNameTyping">.</span>
+      </div> <!-- end scrollme -->
+
+      <div *ngIf="!chatRoomTitle" class="col-sm blankContent">
+        Click on a group to start conversation!!!
+      </div>
+      <!-- end chat-history -->
+
+      <div class="chat-message clearfix p-2 col-12" *ngIf="chatRoomTitle">
+
+        <div class="input-group">
+          <div class="col-9 col-md-11">
+            <textarea name="message-to-send" id="message-to-send" (keydown)="sendMessageUsingKeypress($event)"
+              [(ngModel)]="msgText" placeholder="Type your message" rows="1"></textarea>
+          </div>
+          <div class="col-3 col-md-1">
+            <button (click)="sendMessage()" class="btn btn-dark">Send</button>
+          </div>
+        </div>
+
+      </div> <!-- end send chat-message -->
+
+    </div>
+    <!--end 8 column groupChatIDBox division-->
+
+  </div> <!-- end row -->
+
+</div> <!-- end container -->

@@ -24,9 +24,10 @@ export class SignupComponent implements OnInit {
   constructor(public appService: AppService, private toastr: ToastrService, public route: Router, private socketService: SocketService) { }
 
   ngOnInit() {
+    
   }
 
-
+ 
 
   public goToSignIn: any = () => {
     this.route.navigate(['/'])

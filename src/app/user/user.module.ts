@@ -16,7 +16,8 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
     RouterModule.forChild([
       {path:'signup',component:SignupComponent},
       {path:'forgotPassword',component:ForgotpasswordComponent},
-      {path:'resetPassword/:userId',component:ResetpasswordComponent}
+      {path:'resetPassword/:userId',component:ResetpasswordComponent},
+      {path:'activate',component:VerifyEmailComponent}
     ])
   ],
   declarations: [LoginComponent, SignupComponent, ForgotpasswordComponent, ResetpasswordComponent, VerifyEmailComponent]

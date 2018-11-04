@@ -1,0 +1,22 @@
+<div class="container" style="margin-top: 5vh;">
+  <div class="form-signin cardBorder text-center" >
+    <h1 class="h3 mb-3 font-weight-normal">Join Chat Room</h1>
+
+    <div class="row">
+      <div class="col-md-12" *ngIf="retrivedRoomDetails">
+
+        <h5 class="h3 mb-3 font-weight-normal" >Your Going to Join {{retrivedRoomDetails.chatRoomTitle}}</h5>
+        <h5 class="h3 mb-3 font-weight-normal">Created By   {{retrivedRoomDetails.userName}}</h5>
+      </div>
+
+    </div>
+ 
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-md btn-info" type="button" (click)="joinChatRoom()">Join Group</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

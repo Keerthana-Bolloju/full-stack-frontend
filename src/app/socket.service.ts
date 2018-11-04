@@ -14,8 +14,8 @@ import{HttpErrorResponse,HttpParams} from '@angular/common/http';
 })
 export class SocketService {
 
-  private url = 'http://api.ping-you.xyz'
-  private socket
+  private url = 'http://localhost:3000';
+  private socket;
 
   constructor(public http:HttpClient) {
     //connection is being created
@@ -68,6 +68,69 @@ export class SocketService {
     });
   } // end listenUserTyping
 
+//FOR ROOM START
+
+public onlineUserListRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('online-user-room-list', (userList) => {
+      observer.next(userList);
+    });//end On method
+  });//end observable
+}//end onlineUserListRoom
+
+
+public createdChatRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('created-chatroom', (data) => {
+      observer.next(data);
+    });//end On method
+  });//end observable
+}//end createdChatRoom
+
+public joinedChatRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('joined-chatroom', (data) => {
+      observer.next(data);
+    });//end On method
+  });//end observable
+}//end joinedChatRoom
+
+
+public leavedChatRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('leaved-chatroom', (data) => {
+      observer.next(data);
+    });//end On method
+  });//end observable
+}//end leavedChatRoom
+
+
+public deletedChatRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('deleted-chatroom', (data) => {
+      observer.next(data);
+    });//end On method
+  });//end observable
+}//end leavedChatRoom
+
+public chatByUserIdInRoom = () => {
+  return Observable.create((observer) => {
+    this.socket.on('get-chat', (data) => {
+      observer.next(data);
+    }); // end Socket
+  }); // end Observable
+} // end chatByUserId
+
+public listenAuthError = () => {
+  return Observable.create((observer) => {
+    this.socket.on('auth-error', (data) => {
+      observer.next(data);
+    }); // end Socket
+  }); // end Observable
+} // end listenAuthError
+
+//FOR ROOM END
+
    /*************************************** END EVENTS TO BE LISTENED ***********************************/
 
 
@@ -81,7 +144,6 @@ export class SocketService {
     this.socket.emit('set-user',(authToken))
 
    }//end setUser
-
 
    public sendWelcomeEmail = (data) => {
     this.socket.emit('activate-email', data)
@@ -106,6 +168,35 @@ export class SocketService {
    public exitSocket = ()=>{
      this.socket.disconnect()
    }//end exit socket
+
+   
+//FOR ROOM START
+public SendChatMessageInRoom = (chatDetails) => {
+  this.socket.emit('chat-room-msg', chatDetails);
+}
+
+public createChatRoom = (data) => {
+  this.socket.emit('create-chat-room', data);
+}
+
+public joinChatRoom = (data) => {
+  this.socket.emit('join-chat-room', data);
+}
+
+public leaveChatRoom = (data) => {
+  this.socket.emit('leave-chat-room', data);
+}
+
+public deleteChatRoom = (data) => {
+  this.socket.emit('delete-chat-room', data);
+}
+
+public shareAndInviteChatRoom = (emailDetails) => {
+  this.socket.emit('share-invite-chat-room', emailDetails);
+}
+
+
+//FOR ROOM END
 
 
    /************************************* END EVENTS TO BE EMITTED ***********************************/

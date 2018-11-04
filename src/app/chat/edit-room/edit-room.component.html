@@ -1,0 +1,15 @@
+<div class="container" style="margin-top: 5vh;">
+  <div class="form-signin cardBorder text-center" >
+    <img class="mb-4" src="assets/whatsapp.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Update Chat Room</h1>
+
+    <input type="text" id="inputChatRoomTitle" [(ngModel)]="chatRoomTitle" class="form-control" placeholder="Chat Room Name" required autofocus>
+
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-md btn-info" type="button" (click)="updateChatRoom()">Update</button>
+      </div>
+    </div>
+
+  </div>
+</div>

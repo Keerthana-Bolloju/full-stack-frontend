@@ -13,7 +13,6 @@ import{Cookie} from 'ng2-cookies/ng2-cookies';
 export class VerifyEmailComponent implements OnInit {
 
   public activateUserToken:any
-  public siteFound:boolean
 
   constructor(public appService:AppService,public router: Router,public activatedRoute:ActivatedRoute,private toastr:ToastrService) { }
 
@@ -36,7 +35,7 @@ export class VerifyEmailComponent implements OnInit {
         Cookie.set('firstLogin','firstLogin')
         apiResponse.data.userDetails['userName'] = (apiResponse.data.userDetails.firstName + ' ' + apiResponse.data.userDetails.lastName).trim()
         this.appService.setUserInfoInLocalStorage(apiResponse.data.userDetails)
-        this.router.navigate(['/home'])
+        this.router.navigate(['/'])
       }else{
         this.toastr.error(apiResponse.message)
       }
